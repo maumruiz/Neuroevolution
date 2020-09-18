@@ -8,6 +8,11 @@ import random
 import numpy
 import math
 import matplotlib.pyplot
+import pandas as pd
+
+data = pd.read_csv('data.csv')
+x_data = numpy.array(data['x'])
+y_data = numpy.array(data['f(x)'])
 
 def logsig (x):
   a = numpy.zeros((len(x), 1))
@@ -15,7 +20,8 @@ def logsig (x):
     a[i] = [1 / (1 + math.exp(-x[i]))]
   return a
 
-logsig([-10, 0, 10])
+# logsig([-10, 0, 10])
+
 
 # Implements the random initialization of individuals using the real-valued representation.
 def createIndividual(n):
@@ -51,13 +57,15 @@ def evaluate(individual, n):
   b1 = b1.reshape(n, 1)
   w2 = individual[2* n:3*n]
   b2 = individual[3 * n]
-  p = numpy.arange(-3, 3.01, 0.1)
-  t = p ** 3
-  for i in range(len(t)):
-    a1 = logsig(numpy.add(numpy.matmul(w1, p[i].reshape(1, 1)), b1))  
+
+  # p = numpy.arange(-5, 4.51, 0.1)
+  # t = p ** 3
+
+  for i in range(len(y_data)):
+    a1 = logsig(numpy.add(numpy.matmul(w1, x_data[i].reshape(1, 1)), b1))  
     a2 = numpy.add(numpy.matmul(w2, a1), b2) * 10
-    evaluation += (math.pow(a2[0] - t[i], 2))
-  return evaluation / len(t);
+    evaluation += (math.pow(a2[0] - y_data[i], 2))
+  return evaluation / len(y_data)
 
 # Implements the tournament selection.
 def select(population, evaluation, tournamentSize):
@@ -76,14 +84,14 @@ def plot(individual, n):
   b1 = b1.reshape(n, 1)
   w2 = individual[2* n:3*n]
   b2 = individual[3 * n]
-  p = numpy.arange(-3, 3.01, 0.1)
-  y = numpy.zeros(len(p))
+  # p = numpy.arange(-5, 4.51, 0.1)
+  y = numpy.zeros(len(x_data))
   for i in range(len(y)):
-    a1 = logsig(numpy.add(numpy.matmul(w1, p[i].reshape(1, 1)), b1))  
+    a1 = logsig(numpy.add(numpy.matmul(w1, x_data[i].reshape(1, 1)), b1))  
     a2 = numpy.add(numpy.matmul(w2, a1), b2) * 10   
     y[i] = a2
-  matplotlib.pyplot.plot(p, y, label = "GA Approximation")
-  matplotlib.pyplot.plot(p, p**3, label = "Objective")  
+  matplotlib.pyplot.plot(x_data, y, label = "GA Approximation")
+  matplotlib.pyplot.plot(x_data, y_data, label = "Objective")  
   matplotlib.pyplot.legend()
   matplotlib.pyplot.title("GA Approximation vs. Objective")
   matplotlib.pyplot.show()
@@ -98,10 +106,10 @@ def geneticAlgorithm(n, populationSize, generations, cRate, mRate):
     population[i] = individual
     evaluation[i] = evaluate(individual, n)
   # Keeps a record of the best individual found so far
-  index = 0;
+  index = 0
   for i in range(1, populationSize):
     if (evaluation[i] < evaluation[index]):
-      index = i;
+      index = i
   bestIndividual = population[index]
   bestEvaluation = evaluation[index]
   best = [0] * generations
