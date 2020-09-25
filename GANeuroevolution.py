@@ -13,9 +13,6 @@ import argparse
 from matplotlib import rc
 from matplotlib.backends.backend_pdf import PdfPages
 rc('font',**{'family':'sans-serif','sans-serif':['Times'],'size':16})
-## for Palatino and other serif fonts use:
-#rc('font',**{'family':'serif','serif':['Palatino']})
-#rc('text', usetex=True)
 
 data = pd.read_csv('data.csv')
 x_data = numpy.array(data['x'])
