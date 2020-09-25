@@ -19,7 +19,7 @@ There are some arguments that can be passed to the python execution in order to 
 `python GANeuroevolution.py --crossover_rate 0.95 --mutation_rate 0.15`
 `python GANeuroevolution.py --generations 50 --mutation_rate 0.15`
 
-# Arguments
+### Arguments
 The script takes the following arguments for the options
 
 - `-g, --generations`: Number of generations, default is 150
