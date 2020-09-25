@@ -9,6 +9,7 @@ import numpy
 import math
 import matplotlib.pyplot
 import pandas as pd
+import argparse
 from matplotlib import rc
 from matplotlib.backends.backend_pdf import PdfPages
 rc('font',**{'family':'sans-serif','sans-serif':['Times'],'size':16})
@@ -19,6 +20,31 @@ rc('font',**{'family':'sans-serif','sans-serif':['Times'],'size':16})
 data = pd.read_csv('data.csv')
 x_data = numpy.array(data['x'])
 y_data = numpy.array(data['f(x)'])
+
+def getArgs():
+  parser = argparse.ArgumentParser(description='Neuroevolution.')
+
+  parser.add_argument('-g', '--generations',
+                        type=int,
+                        help='Number of generations, default=150',
+                        default=300)
+
+  parser.add_argument('-p', '--population',
+                        type=int,
+                        help='Population size, default=100',
+                        default=100)
+
+  parser.add_argument('-cr', '--crossover_rate',
+                        type=float,
+                        help='Crossover rate, default=0.8',
+                        default=0.75)
+
+  parser.add_argument('-mr', '--mutation_rate',
+                        type=float,
+                        help='Mutation rate, default=0.3',
+                        default=0.15)
+    
+  return parser
 
 def logsig (x):
   a = numpy.zeros((len(x), 1))
@@ -147,9 +173,17 @@ def geneticAlgorithm(n, populationSize, generations, cRate, mRate):
   return bestIndividual, bestEvaluation
 
 # Runs the genetic algorithm
-n = 5
-#solution, evaluation = geneticAlgorithm(n, 100, 200, 0.9, 0.05)
-solution, evaluation = geneticAlgorithm(n, 100, 300, 0.75, 0.15)
-print(solution)
-print(evaluation)
-plot(solution, n)
+if __name__ == "__main__":
+  options = getArgs().parse_args()
+
+  n = 5
+  population_size = options.population
+  generations = options.generations
+  crossover_rate = options.crossover_rate
+  mutation_rate = options.mutation_rate
+  
+  print('Running Genetic Algorithm')
+  solution, evaluation = geneticAlgorithm(n, population_size, generations, crossover_rate, mutation_rate)
+  print('Best chromosome: %s' % solution)
+  print('Evaluation: %s' % evaluation)
+  plot(solution, n)
