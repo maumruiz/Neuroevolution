@@ -9,6 +9,12 @@ import numpy
 import math
 import matplotlib.pyplot
 import pandas as pd
+from matplotlib import rc
+from matplotlib.backends.backend_pdf import PdfPages
+rc('font',**{'family':'sans-serif','sans-serif':['Times'],'size':16})
+## for Palatino and other serif fonts use:
+#rc('font',**{'family':'serif','serif':['Palatino']})
+#rc('text', usetex=True)
 
 data = pd.read_csv('data.csv')
 x_data = numpy.array(data['x'])
@@ -90,10 +96,10 @@ def plot(individual, n):
     a1 = logsig(numpy.add(numpy.matmul(w1, x_data[i].reshape(1, 1)), b1))  
     a2 = numpy.add(numpy.matmul(w2, a1), b2) * 10   
     y[i] = a2
-  matplotlib.pyplot.plot(x_data, y, label = "GA Approximation")
-  matplotlib.pyplot.plot(x_data, y_data, label = "Objective")  
+  matplotlib.pyplot.plot(x_data, y, label = "GA Approximation", c = 'r')
+  matplotlib.pyplot.scatter(x_data, y_data, label = "Objective", c = 'y')  
   matplotlib.pyplot.legend()
-  matplotlib.pyplot.title("GA Approximation vs. Objective")
+  #matplotlib.pyplot.title("GA Approximation vs. Objective")
   matplotlib.pyplot.show()
 
 # Implements a genetic algorithm.
@@ -133,17 +139,17 @@ def geneticAlgorithm(n, populationSize, generations, cRate, mRate):
         bestIndividual = population[j]
     best[i] = bestEvaluation
     avg[i] = numpy.average(evaluation)  
-  matplotlib.pyplot.plot(range(generations), best, label = "Best")
-  matplotlib.pyplot.plot(range(generations), avg, label = "Average")
+  matplotlib.pyplot.plot(range(generations), best, label = "Best", c = 'r')
+  matplotlib.pyplot.plot(range(generations), avg, label = "Average", c = 'royalblue')
   matplotlib.pyplot.legend()
-  matplotlib.pyplot.title("GA Run")
+  #matplotlib.pyplot.title("GA Run")
   matplotlib.pyplot.show()
   return bestIndividual, bestEvaluation
 
 # Runs the genetic algorithm
 n = 5
 #solution, evaluation = geneticAlgorithm(n, 100, 200, 0.9, 0.05)
-solution, evaluation = geneticAlgorithm(n, 100, 100, 0.9, 0.10)
+solution, evaluation = geneticAlgorithm(n, 100, 300, 0.75, 0.15)
 print(solution)
 print(evaluation)
 plot(solution, n)
